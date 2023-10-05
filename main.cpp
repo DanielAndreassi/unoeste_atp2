@@ -60,7 +60,7 @@ int buscarCpfClienteVendas(tpVenda vendas[TF], int &tl, int cpf);
 void exclusaoProd(tpProduto produtos[TF], int &tl, int indice);
 void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd);
 void exclusaoCliente(tpCliente clientes[TF], int &tl);
-
+void Moldura(int CI, int LI, int CF, int LF, int CorT, int CorF);
 // FUNÇÕES
 
 void cadastroProduto(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[TF], int &tlForn)
@@ -78,10 +78,10 @@ void cadastroProduto(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[
     printf("\nDigite o codigo do fornecedor: \n");
     scanf("%d", &codFornecedor);
     pos = buscaForn(fornecedores, tlForn, codFornecedor);
-    if (aux == -1)
+    if (pos == -1)
     {
         printf("\nFornecedor nao cadastrado!\n");
-        cadastroForn(fornecedores, tlForn);
+        cadastroForn(fornecedores, tlForn,produtos,tl);
     }
     printf("\nA quantidade em estoque desse produto: \n");
     scanf("%d", &produtos[tl].estoque);
@@ -210,11 +210,11 @@ void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF]
     }
     tl--;
 
-    aux = buscaProdFornecedor(produtos, tlProd, codForn);
+    aux = buscaProdPorFornecedor(produtos, tlProd, codForn);
     while (aux != -1)
     {
         exclusaoProd(produtos, tlProd, aux);
-        aux = buscaProdFornecedor(produtos, tlProd, codForn);
+        aux = buscaProdPorFornecedor(produtos, tlProd, codForn);
     }
     printf("\nFornecedor excluido com sucesso!\n");
 }
@@ -251,4 +251,33 @@ void exclusaoCliente(tpCliente clientes[TF], int &tl)
     }
     tl--;
     printf("\nCliente excluido com sucesso!\n");
+}
+
+void Moldura(int CI, int LI, int CF, int LF, int CorT, int CorF)
+
+{
+    int i;
+	textcolor(CorT);
+	textbackground(CorF);
+	gotoxy(CI,LI);
+	printf("%c",201);
+	gotoxy(CI,LF);
+	printf("%c",200);
+	gotoxy(CF,LI);
+	printf("%c",187);
+	gotoxy(CF,LF);
+	printf("%c",188);
+	for(i=CI+1; i<CF; i++)
+	{
+		gotoxy(i,LI); printf("%c",205);
+		gotoxy(i,LF); printf("%c",205);
+	}
+	for(i=LI+1; i<LF; i++)
+	{
+		gotoxy(CI,i); printf("%c",186);
+		gotoxy(CF,i); printf("%c",186);
+	}
+	
+	textcolor(7);
+	textbackground(0);
 }
