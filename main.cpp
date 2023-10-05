@@ -49,6 +49,9 @@ typedef struct
 
 // DEFINIÇÃO DE "INTERFACES" DE FUNÇÕES
 
+char menu (void);
+void executar ();
+void Moldura(int CI, int LI, int CF, int LF, int CorT, int CorF);
 void cadastroCliente(tpCliente clientes[TF], int &tl);
 void cadastroProduto(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[TF], int &tlForn);
 void cadastroForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd);
@@ -60,7 +63,8 @@ int buscarCpfClienteVendas(tpVenda vendas[TF], int &tl, int cpf);
 void exclusaoProd(tpProduto produtos[TF], int &tl, int indice);
 void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd);
 void exclusaoCliente(tpCliente clientes[TF], int &tl);
-void Moldura(int CI, int LI, int CF, int LF, int CorT, int CorF);
+
+
 // FUNÇÕES
 
 void cadastroProduto(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[TF], int &tlForn)
@@ -280,4 +284,59 @@ void Moldura(int CI, int LI, int CF, int LF, int CorT, int CorF)
 	
 	textcolor(7);
 	textbackground(0);
+}
+
+char menu (void)
+{
+    clrscr();
+    printf("\n# # #  M E N U  # # #\n");
+	printf("\n[A] ");
+	printf("\n[B] ");
+	printf("\n[C] ");
+	printf("\n[D] ");
+	printf("\n[E] ");
+	printf("\n[F] ");
+	printf("\n[G] ");
+	printf("\n[H] ");
+	printf("\n[I] ");
+	printf("\n[ESC] Sair\n");
+	printf("\n\nOpcao desejada: ");
+    return toupper(getche());
+}
+
+void executar ()
+{
+    char op;
+    int tl=0;
+    // exibicao(); MOLDURA QUANDO ESTIVER PRONTA
+    getch();
+
+    do
+    {  
+        op=menu();
+        switch(op)
+        {
+            case 'A':
+                break;
+            case 'B':
+                break;
+            case 'C':
+                break;
+            case 'D':
+                break;
+            case 'E':
+                break;
+            case 'F':
+                break;
+            case 'G':
+                break;
+            case 'H':
+        }
+
+    }while(op!=27);
+}
+
+void main ()
+{
+    executar();    
 }
