@@ -49,25 +49,81 @@ typedef struct
 
 // DEFINIÇÃO DE "INTERFACES" DE FUNÇÕES
 
-char menu (void);
-void executar ();
-void Moldura(int CI, int LI, int CF, int LF, int CorT, int CorF);
-void cadastroCliente(tpCliente clientes[TF], int &tl);
-void cadastroProduto(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[TF], int &tlForn);
-void cadastroForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd);
-int buscaProd(tpProduto produtos[TF], int tl, int codProduto);
-int buscaForn(tpFornecedor fornecedores[TF], int tl, int codForn);
-int buscaCliente(tpCliente clientes[TF], int tl, long int cpfCliente);
-int buscaProdPorFornecedor(tpProduto produtos[TF], int tl, int codForn);
-int buscarCpfClienteVendas(tpVenda vendas[TF], int &tl, int cpf);
-void exclusaoProd(tpProduto produtos[TF], int &tl, int indice);
-void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd);
-void exclusaoCliente(tpCliente clientes[TF], int &tl);
+void executar();
 
+// *** MENUS ***
+char menuPrincipal(void);
+char menuVendas(void);
+char menuProdutos(void);
+char menuFornecedores(void);
+char menuClientes(void);
+
+// *** AUXILIARES ***
+void insercaoAutomDeDados(tpProduto produtos[TF], int &tlProdutos, tpCliente clientes[TF], int &tlClientes, tpFornecedor fornecedores[TF], int tlFornecedores);
+void Moldura(int CI, int LI, int CF, int LF, int CorT, int CorF);
+
+// *** VENDAS ****
+void efetuarVenda(tpVenda vendas[TF], int &tl);
+void relatorioDeVendas(tpVenda vendas[TF], int &tl);
+void exclusaoDeVendas(tpVenda vendas[TF], int &tl);
+int buscarCpfClienteVendas(tpVenda vendas[TF], int &tl, int cpf);
+
+// *** CLIENTES ***
+void cadastroCliente(tpCliente clientes[TF], int &tl);
+int buscaCliente(tpCliente clientes[TF], int tl, long int cpfCliente);
+void exclusaoCliente(tpCliente clientes[TF], int &tl);
+void consultaClientes(tpCliente clientes[TF], int tl);
+void exclusaoClientes(tpCliente clientes[TF], int &tlClientes);
+void alteracaoClientes(tpCliente clientes[TF], int tlClientes);
+void relatorioClientes(tpCliente fornecedores[TF], int tlFornecedores);
+
+// *** PRODUTOS ***
+void cadastroProdutos(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[TF], int &tlForn);
+int buscaProd(tpProduto produtos[TF], int tl, int codProduto);
+int buscaProdPorFornecedor(tpProduto produtos[TF], int tl, int codForn);
+void exclusaoProd(tpProduto produtos[TF], int &tl, int indice);
+void exclusaoProdutos(tpProduto produtos[TF], int tlProdutos);
+void consultaProdutos(tpProduto produtos[TF], int tlProdutos);
+void alteracaoProdutos(tpProduto protudos[TF], int tlProdutos);
+void relatorioProdutos(tpProdutos produtos[TF], int tlProdutos);
+
+// *** FORNECEDORES ***
+void cadastroForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd);
+int buscaForn(tpFornecedor fornecedores[TF], int tl, int codForn);
+void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd);
+void consultaForn(tpFornecedor forncedores[TF]);
+void alteracaoFornecedores(tpFornecedor fornecedores[TF], int tl);
+void relatorioFornecedores(tpFornecedor fornecedores[TF], int tl);
+void aumentoDePreco(tpFornecedor fornecedores[TF], int tl);
 
 // FUNÇÕES
 
-void cadastroProduto(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[TF], int &tlForn)
+void insercaoAutomDeDados(tpProduto produtos[TF], int &tlProdutos, tpCliente clientes[TF], int &tlClientes, tpFornecedor fornecedores[TF], int tlFornecedores)
+{
+    return;
+}
+
+void exclusaoProdutos(tpProduto produtos[TF], int tlProdutos)
+{
+    return;
+}
+
+void relatorioProdutos(tpProdutos produtos[TF], int tlProdutos)
+{
+    return;
+}
+
+void alteracaoProdutos(tpProduto protudos[TF], int tlProdutos)
+{
+    return;
+}
+
+void consultaProdutos(tpProduto produtos[TF], int tlProdutos)
+{
+    return;
+}
+
+void cadastroProdutos(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[TF], int &tlForn)
 {
     int pos, codProd, codFornecedor;
     printf("\nDigite o codigo do produto a cadastrar: \n");
@@ -85,7 +141,7 @@ void cadastroProduto(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[
     if (pos == -1)
     {
         printf("\nFornecedor nao cadastrado!\n");
-        cadastroForn(fornecedores, tlForn,produtos,tl);
+        cadastroForn(fornecedores, tlForn, produtos, tl);
     }
     printf("\nA quantidade em estoque desse produto: \n");
     scanf("%d", &produtos[tl].estoque);
@@ -261,82 +317,294 @@ void Moldura(int CI, int LI, int CF, int LF, int CorT, int CorF)
 
 {
     int i;
-	textcolor(CorT);
-	textbackground(CorF);
-	gotoxy(CI,LI);
-	printf("%c",201);
-	gotoxy(CI,LF);
-	printf("%c",200);
-	gotoxy(CF,LI);
-	printf("%c",187);
-	gotoxy(CF,LF);
-	printf("%c",188);
-	for(i=CI+1; i<CF; i++)
-	{
-		gotoxy(i,LI); printf("%c",205);
-		gotoxy(i,LF); printf("%c",205);
-	}
-	for(i=LI+1; i<LF; i++)
-	{
-		gotoxy(CI,i); printf("%c",186);
-		gotoxy(CF,i); printf("%c",186);
-	}
-	
-	textcolor(7);
-	textbackground(0);
+    textcolor(CorT);
+    textbackground(CorF);
+    gotoxy(CI, LI);
+    printf("%c", 201);
+    gotoxy(CI, LF);
+    printf("%c", 200);
+    gotoxy(CF, LI);
+    printf("%c", 187);
+    gotoxy(CF, LF);
+    printf("%c", 188);
+    for (i = CI + 1; i < CF; i++)
+    {
+        gotoxy(i, LI);
+        printf("%c", 205);
+        gotoxy(i, LF);
+        printf("%c", 205);
+    }
+    for (i = LI + 1; i < LF; i++)
+    {
+        gotoxy(CI, i);
+        printf("%c", 186);
+        gotoxy(CF, i);
+        printf("%c", 186);
+    }
+
+    textcolor(7);
+    textbackground(0);
 }
 
-char menu (void)
+void efetuarVenda(tpVenda vendas[TF], int &tl)
+{
+    return;
+}
+
+void relatorioDeVendas(tpVenda vendas[TF], int &tl)
+{
+    return;
+}
+
+void exclusaoDeVendas(tpVenda vendas[TF], int &tl)
+{
+    return;
+}
+
+void consultaForn(tpFornecedor forncedores[TF])
+{
+    // SÓ FAZER UMA BUSCA COM LOOP PARA EXIBIR QUANTOS FORNECEDORES QUISER
+    return;
+}
+
+void alteracaoFornecedores(tpFornecedor fornecedores[TF], int tl)
+{
+    return;
+}
+
+void relatorioFornecedores(tpFornecedor fornecedores[TF], int tl)
+{
+    return;
+}
+
+void aumentoDePreco(tpFornecedor fornecedores[TF], int tl)
+{
+    return;
+}
+
+void consultaClientes(tpCliente clientes[TF], int tl)
+{
+    return;
+}
+
+void exclusaoClientes(tpCliente clientes[TF], int &tlClientes)
+{
+    return;
+}
+
+void alteracaoClientes(tpCliente clientes[TF], int tlClientes)
+{
+    return;
+}
+
+void relatorioClientes(tpCliente fornecedores[TF], int tlFornecedores)
+{
+    return;
+}
+
+char menuFornecedores(void)
 {
     clrscr();
-    printf("\n# # #  M E N U  # # #\n");
-	printf("\n[A] ");
-	printf("\n[B] ");
-	printf("\n[C] ");
-	printf("\n[D] ");
-	printf("\n[E] ");
-	printf("\n[F] ");
-	printf("\n[G] ");
-	printf("\n[H] ");
-	printf("\n[I] ");
-	printf("\n[ESC] Sair\n");
-	printf("\n\nOpcao desejada: ");
+    // VER ONDE DARÁ CLEAR NA TELA
+    printf("\n# # #  MENU DE FORNECEDORES  # # #\n");
+    printf("\n[A] Cadastro de Fornecedores");
+    printf("\n[B] Consulta de Fornecedores");
+    printf("\n[C] Exclusão de Fornecedores");
+    printf("\n[D] Alteração de Fornecedores");
+    printf("\n[E] Relatório de Fornecedores");
+    printf("\n[F] Aumento de preços de produtos");
+    printf("\n[ESC] Voltar para menu principal\n");
+    printf("\n\nOpcao desejada: ");
     return toupper(getche());
 }
 
-void executar ()
+char menuProdutos(void)
 {
-    char op;
-    int tl=0;
+    clrscr();
+    // VER ONDE DARÁ CLEAR NA TELA
+    printf("\n# # #  MENU DE PRODUTOS  # # #\n");
+    printf("\n[A] Cadastro de Produtos");
+    printf("\n[B] Consulta de Produtos");
+    printf("\n[C] Exclusão de Produtos");
+    printf("\n[D] Alteração de Produtos");
+    printf("\n[E] Relatório de Produtos");
+    printf("\n[ESC] Voltar para menu principal\n");
+    printf("\n\nOpcao desejada: ");
+    return toupper(getche());
+}
+
+char menuVendas(void)
+{
+    clrscr();
+    // VER ONDE DARÁ CLEAR NA TELA
+    printf("\n# # #  MENU DE VENDAS  # # #\n");
+    printf("\n[A] Efetuar uma venda");
+    printf("\n[B] Relatório de vendas");
+    printf("\n[C] Exclusão de uma venda");
+    printf("\n[ESC] Voltar para menu principal\n");
+    printf("\n\nOpcao desejada: ");
+    return toupper(getche());
+}
+
+char menuClientes(void)
+{
+    clrscr();
+    // VER ONDE DARÁ CLEAR NA TELA
+    printf("\n# # #  MENU DE CLIENTES  # # #\n");
+    printf("\n[A] Cadastro de Clientes");
+    printf("\n[B] Consulta de Clientes");
+    printf("\n[C] Exclusão de Clientes");
+    printf("\n[D] Alteração de Clientes");
+    printf("\n[E] Relatório de Clientes");
+    printf("\n[ESC] Voltar para menu principal\n");
+    printf("\n\nOpcao desejada: ");
+    return toupper(getche());
+}
+
+char menuPrincipal(void)
+{
+    clrscr();
+    // VER ONDE DARÁ CLEAR NA TELA
+    printf("\n# # #  MENU PRINCIPAL  # # #\n");
+    printf("\n[A] Seção de Vendas");
+    printf("\n[B] Seção de Produtos");
+    printf("\n[C] Seção de Fornecedores");
+    printf("\n[D] Seção de Clientes");
+    printf("\n[E] Inserção de dados automáticos");
+    printf("\n[ESC] Sair\n");
+    printf("\n\nOpcao desejada: ");
+    return toupper(getche());
+}
+
+void executar()
+{
+    // CRIAR TODAS AS INSTÂNCIAS DOS VETORES
+    char opMenuPrincipal;
+    tpVenda vendas[TF];
+    int tlVendas = 0;
+    tpCliente clientes[TF];
+    int tlClientes = 0;
+    tpFornecedor fornecedores[TF];
+    int tlFornecedores = 0;
+    tpProduto produtos[TF];
+    int tlProdutos = 0;
+    tpVendasProdutos vendas_produtos[TF];
+
     // exibicao(); MOLDURA QUANDO ESTIVER PRONTA
     getch();
 
     do
-    {  
-        op=menu();
-        switch(op)
+    {
+        opMenuPrincipal = menuPrincipal();
+        switch (opMenuPrincipal)
         {
-            case 'A':
-                break;
-            case 'B':
-                break;
-            case 'C':
-                break;
-            case 'D':
-                break;
-            case 'E':
-                break;
-            case 'F':
-                break;
-            case 'G':
-                break;
-            case 'H':
+        case 'A':
+            char opMenuVendas;
+            do
+            {
+                opMenuVendas = menuVendas();
+                switch (opMenuVendas)
+                {
+                case 'A':
+                    efetuarVenda(vendas, tlVendas);
+                    break;
+                case 'B':
+                    relatorioDeVendas(vendas, tlVendas);
+                    break;
+                case 'C':
+                    exclusaoDeVendas(vendas, tlVendas);
+                    break;
+                }
+            } while (opMenuVendas != 27);
+            break;
+        case 'B':
+            char opMenuProdutos;
+            do
+            {
+                opMenuProdutos = menuProdutos();
+                switch (opMenuProdutos)
+                {
+                case 'A':
+                    cadastroProdutos(produtos, tlProdutos, fornecedores, tlFornecedores);
+                    break;
+                case 'B':
+                    consultaProdutos(produtos, tlProdutos);
+                    break;
+                case 'C':
+                    exclusaoProdutos(produtos, tlProdutos);
+                    break;
+                case 'D':
+                    alteracaoProdutos(protudos, tlProdutos);
+                    break;
+                case 'E':
+                    relatorioProdutos(produtos, tlProdutos);
+                    break;
+                }
+            } while (opMenuProdutos != 27);
+            break;
+        case 'C':
+            char opMenuFornecedores;
+            do
+            {
+                opMenuFornecedores = menuFornecedores();
+                switch (opMenuFornecedores)
+                {
+                case 'A':
+                    cadastroForn(fornecedores, tlFornecedores, produtos, tlProdutos);
+                    break;
+                case 'B':
+                    consultaForn(fornecedores);
+                    break;
+                case 'C':
+                    exclusaoForn(fornecedores, tlFornecedores, produtos, tlProdutos);
+                    break;
+                case 'D':
+                    alteracaoFornecedores(fornecedores, tlFornecedores);
+                    break;
+                case 'E':
+                    relatorioFornecedores(fornecedores, tlFornecedores);
+                    break;
+                case 'F':
+                    aumentoDePreco(fornecedores, tlFornecedores);
+                    break;
+                }
+            } while (opMenuFornecedores != 27);
+            break;
+        case 'D':
+            char opMenuClientes;
+            do
+            {
+                opMenuClientes = menuClientes();
+                switch (opMenuClientes)
+                {
+                case 'A':
+                    cadastroCliente(clientes, tlClientes);
+                    break;
+                case 'B':
+                    consultaClientes(clientes);
+                    break;
+                case 'C':
+                    exclusaoClientes(clientes, tlClientes);
+                    break;
+                case 'D':
+                    alteracaoClientes(clientes, tlClientes);
+                    break;
+                case 'E':
+                    relatorioClientes(clientes, tlClientes);
+                    break;
+                case 'F':
+                    aumentoDePreco(clientes, tlClientes);
+                    break;
+                }
+            } while (opMenuClientes != 27);
+            break;
+        case 'E':
+            insercaoAutomDeDados(produtos, tlProdutos, clientes, tlClientes, fornecedores, tlFornecedores) break;
         }
-
-    }while(op!=27);
+    } while (opMenuPrincipal != 27);
 }
 
-void main ()
+void main()
 {
-    executar();    
+    executar();
 }
