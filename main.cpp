@@ -85,7 +85,7 @@ void exclusaoProd(tpProduto produtos[TF], int &tl, int indice);
 void exclusaoProdutos(tpProduto produtos[TF], int tlProdutos);
 void consultaProdutos(tpProduto produtos[TF], int tlProdutos);
 void alteracaoProdutos(tpProduto protudos[TF], int tlProdutos);
-void relatorioProdutos(tpProdutos produtos[TF], int tlProdutos);
+void relatorioProdutos(tpProduto produtos[TF], int tlProdutos);
 
 // *** FORNECEDORES ***
 void cadastroForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd);
@@ -108,7 +108,7 @@ void exclusaoProdutos(tpProduto produtos[TF], int tlProdutos)
     return;
 }
 
-void relatorioProdutos(tpProdutos produtos[TF], int tlProdutos)
+void relatorioProdutos(tpProduto produtos[TF], int tlProdutos)
 {
     return;
 }
@@ -164,7 +164,7 @@ void cadastroForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF]
     gets(fornecedores[tl].nomeForn);
     printf("Digite a cidade do fornecedor: \n");
     gets(fornecedores[tl].cidadeForn);
-    cadastroProduto(produtos, tlProd, fornecedores, tl);
+    cadastroProdutos(produtos, tlProd, fornecedores, tl);
     tl++;
 }
 
@@ -534,7 +534,7 @@ void executar()
                     exclusaoProdutos(produtos, tlProdutos);
                     break;
                 case 'D':
-                    alteracaoProdutos(protudos, tlProdutos);
+                    alteracaoProdutos(produtos, tlProdutos);
                     break;
                 case 'E':
                     relatorioProdutos(produtos, tlProdutos);
@@ -581,7 +581,7 @@ void executar()
                     cadastroCliente(clientes, tlClientes);
                     break;
                 case 'B':
-                    consultaClientes(clientes);
+                    consultaClientes(clientes, tlClientes);
                     break;
                 case 'C':
                     exclusaoClientes(clientes, tlClientes);
@@ -592,19 +592,18 @@ void executar()
                 case 'E':
                     relatorioClientes(clientes, tlClientes);
                     break;
-                case 'F':
-                    aumentoDePreco(clientes, tlClientes);
-                    break;
                 }
             } while (opMenuClientes != 27);
             break;
         case 'E':
-            insercaoAutomDeDados(produtos, tlProdutos, clientes, tlClientes, fornecedores, tlFornecedores) break;
+            insercaoAutomDeDados(produtos, tlProdutos, clientes, tlClientes, fornecedores, tlFornecedores);
+			break;
         }
     } while (opMenuPrincipal != 27);
 }
 
-void main()
+int main()
 {
     executar();
+    return 0;
 }
