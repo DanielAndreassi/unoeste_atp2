@@ -19,20 +19,17 @@ typedef struct
 
     tpData data;
 } tpProduto;
-
 typedef struct
 {
     int codForn;
     char nomeForn[50], cidadeForn[50];
 } tpFornecedor;
-
 typedef struct
 {
     long int cpfCliente, qtdeCompras;
     char nomeCliente[50];
     float valorTotalComprado;
 } tpCliente;
-
 typedef struct
 {
     int codVenda;
@@ -40,7 +37,6 @@ typedef struct
     tpData data;
     float totalVendas;
 } tpVenda;
-
 typedef struct
 {
     int codVenda, codProd, qtde;
