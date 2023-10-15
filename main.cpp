@@ -527,9 +527,9 @@ void exibirMoldura()
 void limparTitulo()
 {
     int linha = 3, colI = 2, colF = 79;
-    for (; colI <= colF; colI++)
+    for (int i = colI; i <= colF; i++)
     {
-        gotoxy(colI, linha);
+        gotoxy(i, linha);
         printf(" ");
     }
 }
@@ -537,9 +537,9 @@ void limparTitulo()
 void limparMensagem()
 {
     int linha = 23, colI = 2, colF = 79;
-    for (; colI <= colF; colI++)
+    for (int i = colI; i <= colF; i++)
     {
-        gotoxy(colI, linha);
+        gotoxy(i, linha);
         printf(" ");
     }
 }
@@ -560,11 +560,11 @@ void limparMenu()
 void limparExecucao()
 {
     int liI = 8, colI = 41, liF = 19, colF = 79;
-    for (; colI <= colF; colI++)
+    for (int i = colI; i <= colF; i++)
     {
-        for (; liI <= liF; liI++)
+        for (int j = liI; j <= liF; j++)
         {
-            gotoxy(colI, liI);
+            gotoxy(i, j);
             printf(" ");
         }
     }
