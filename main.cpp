@@ -237,6 +237,7 @@ void alteracaoProdutos(tpProduto produtos[TF], int tlProdutos, int &linha)
             limparExecucao();
             linha = 7;
             gotoxy(41, linha);
+            linha++;
             printf("Codigo do produto a ser alterado: ");
             scanf("%d", &codProd);
             aux = buscaProd(produtos, tlProdutos, codProd);
