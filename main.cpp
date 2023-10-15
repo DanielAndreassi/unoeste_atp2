@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.c>
+#include <conio2.h>
 #include <windows.h>
 #include <ctype.h>
-#include <locale.h>
 #define TF 100
 // DEFINIÇÃO DE STRUCTS
 typedef struct
@@ -755,7 +754,6 @@ char menuClientes(void)
 char menuPrincipal(void)
 {
     clrscr();
-    setlocale(LC_ALL, "Portuguese");
     // VER ONDE DARÁ CLEAR NA TELA
     printf("\n# # #  MENU PRINCIPAL  # # #\n");
     printf("\n[A] Seção de Vendas");
