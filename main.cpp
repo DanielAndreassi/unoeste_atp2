@@ -63,7 +63,7 @@ void limparExecucao();
 void limparMensagem();
 
 // *** VENDAS ****
-void efetuarVenda(tpVenda vendas[TF], int &tl);
+void efetuarVenda(tpVenda vendas[TF], int &tl, tpCliente clientes[TF], int &tlCLiente, tpProduto produtos[TF], int &tlProdutos, tpVendasProdutos vendasProdutos[TF], int &tlVendasProdutos);
 void relatorioDeVendas(tpVenda vendas[TF], int &tl);
 void exclusaoDeVendas(tpVenda vendas[TF], int &tl);
 int buscarCpfClienteVendas(tpVenda vendas[TF], int &tl, int cpf);
@@ -94,7 +94,7 @@ void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF]
 void consultaForn(tpFornecedor forncedores[TF], int tlForn, int &linha);
 void alteracaoFornecedores(tpFornecedor fornecedores[TF], int tl, int &linha);
 void relatorioFornecedores(tpFornecedor fornecedores[TF], int tl);
-void aumentoDePreco(tpFornecedor fornecedores[TF], int tl);
+void aumentoDePreco(tpFornecedor fornecedores[TF], int tl, tpProduto produtos[TF], int tlProdutos);
 
 // FUNÇÕES
 
@@ -962,8 +962,123 @@ void moldura(int CI, int LI, int CF, int LF, int CorT, int CorF)
     textbackground(0);
 }
 
-void efetuarVenda(tpVenda vendas[TF], int &tl)
+void efetuarVenda(tpVenda vendas[TF], int &tl, tpCliente clientes[TF], int &tlCLiente, tpProduto produtos[TF], int &tlProdutos, tpVendasProdutos vendasProdutos[TF], int &tlVendasProdutos)
 {
+    long long int cpfCliente;
+    int busca, codProd, qtde, buscacliente;
+    float aux = 0;
+    char op, son;
+    // variaveis para venda
+    int codVenda, D, M, A, estoque, qtdeCompras;
+    long long int cpfAux;
+    float totalVendas, valorTotalComprado;
+
+    do
+    {
+        printf("Digite o CPF do cliente: ");
+        scanf("%lld", &cpfCliente);
+
+        buscacliente = buscaCliente(clientes, tlCLiente, cpfCliente);
+        if (buscacliente == -1)
+        {
+            printf("Cliente Nao cadastrado\n");
+            getch();
+            cadastroCliente(clientes, tlCLiente);
+        }
+        do
+        {
+            if (tlProdutos > 0 && op == 'S')
+            {
+                relatorioProdutos(produtos, tlProdutos);
+                printf("Digite o codigo do produto para compra: ");
+                scanf("%d", &codProd);
+                busca = buscaProd(produtos, tlProdutos, codProd);
+                if (busca == -1)
+                {
+                    printf("codigo invalido ou inexiste\n");
+                }
+                else
+                {
+                    printf("Qual a quantidade desse produto: ");
+                    scanf("%d", &qtde);
+                    if (qtde > produtos[busca].estoque)
+                    {
+                        printf("Quantidade indisponivel");
+                        printf("Deseja comprar outra quantidade: (S/N)");
+                        fflush(stdin);
+                        if (toupper(getche()) == 'S')
+                        {
+                            printf("Qual a quantidade desse produto: ");
+                            scanf("%d", &qtde);
+                        }
+                        else
+                            printf("compra cancelada!");
+                    }
+                    else
+                    {
+
+                        codVenda = tl + 1;
+                        cpfAux = cpfCliente;
+                        D = 13;
+                        M = 8;
+                        A = 2024;
+                        totalVendas = produtos[busca].preco * qtde;
+                        estoque = produtos[busca].estoque - qtde;
+                        qtdeCompras = clientes[busca].qtdeCompras + qtde;
+                        valorTotalComprado = clientes[busca].valorTotalComprado + produtos[busca].preco * qtde;
+                        aux += qtde * produtos[busca].preco;
+                        printf("Venda efetuada com sucesso\n");
+                        getch();
+                        fflush(stdin);
+                    }
+                }
+            }
+            else
+            {
+                printf("Nao ha produtos cadastrados\n");
+                getch();
+            }
+            printf("Deseja comprar outro produto: (S/N)");
+            fflush(stdin);
+            op = toupper(getche());
+            if (op == 'N')
+            {
+                printf("o cliente %s comprou %d produtos\n", clientes[busca].nomeCliente, clientes[busca].qtdeCompras);
+                printf("Total da compra: %.2f", aux);
+                getch();
+                printf("deseja finalizar compra? (S/N)");
+                fflush(stdin);
+                son = toupper(getche());
+                if (son == 'N')
+                {
+                    op = 'N';
+                }
+                else
+                {
+                    vendas[tl].codVenda = codVenda;
+                    vendas[tl].cpfCliente = cpfAux;
+                    vendas[tl].data.d = D;
+                    vendas[tl].data.m = M;
+                    vendas[tl].data.a = A;
+                    vendas[tl].totalVendas = totalVendas;
+                    vendasProdutos[tl].codProd = codProd;
+                    vendasProdutos[tl].qtde = qtde;
+                    produtos[busca].estoque = estoque;
+                    clientes[buscacliente].qtdeCompras = qtdeCompras;
+                    clientes[buscacliente].valorTotalComprado = valorTotalComprado;
+                    clientes[buscacliente].qtdeCompras = qtdeCompras + 1;
+                    printf("Venda efetuada com sucesso\n");
+                    getch();
+                    fflush(stdin);
+                    system("cls");
+                    printf("cliente %s comprou %d produtos\n", clientes[buscacliente].nomeCliente, clientes[buscacliente].qtdeCompras);
+                    printf("valor total comprado: %.2f", aux);
+                    getch();
+                }
+            }
+        } while (op == 'S'); // se ja foi verificado o cliente
+
+    } while (toupper(getche()) == 'S'); // primeira entrada sem verificacao de cliente
     return;
 }
 
@@ -989,7 +1104,7 @@ void relatorioDeVendas(tpVenda vendas[TF], int &tl)
     }
     return;
 }
-// sem teste feito por Daniel
+// NAO ESTA FEITO
 
 void exclusaoDeVendas(tpVenda vendas[TF], int &tl)
 {
@@ -1203,8 +1318,46 @@ void relatorioFornecedores(tpFornecedor fornecedores[TF], int tl)
     return;
 }
 // sem teste feito por Daniel
-void aumentoDePreco(tpFornecedor fornecedores[TF], int tl)
+void aumentoDePreco(tpFornecedor fornecedores[TF], int tl, tpProduto produtos[TF], int tlProdutos)
 {
+    int codForn, busca, porcentagem;
+
+    do
+    {
+        if (tl == 0)
+        {
+            printf("\nNao ha dados para fazer um aumento de preco\n\n");
+            getch();
+        }
+        else
+        {
+            printf("\nDigite o coidigo do fornecedor para aumentar o preco dos produtos: \n");
+            scanf("%d", &codForn);
+
+            busca = buscaForn(fornecedores, tl, codForn);
+            if (busca == -1)
+            {
+                printf("\nCodigo invalido ou inexistente\n\n");
+                getch();
+            }
+            else
+            {
+                printf("Qual o percentual de aumento: \n");
+                scanf("%d", &porcentagem);
+
+                for (int i = 0; i < tlProdutos; i++)
+                {
+                    if (produtos[i].codForn == codForn)
+                    {
+                        produtos[i].preco = produtos[i].preco + (produtos[i].preco * porcentagem / 100);
+                    }
+                }
+                printf("\n\nAumento de preco feito com sucesso!!\n\n");
+            }
+        }
+        printf("\n\nDeseja fazer outro aumento de preco: (S/N)\n");
+        fflush(stdin);
+    } while (toupper(getche()) == 'S');
     return;
 }
 
@@ -1249,11 +1402,61 @@ void consultaClientes(tpCliente clientes[TF], int tl)
 // sem teste feito por Daniel
 void exclusaoClientes(tpCliente clientes[TF], int &tlClientes)
 {
+
     return;
 }
-
+// falta exclusao de clientes
 void alteracaoClientes(tpCliente clientes[TF], int tlClientes)
 {
+    int busca;
+    long long int cpf;
+    char op;
+    do
+    {
+        if (tlClientes == 0)
+        {
+            printf("\nNao ha clientes para alterar\n\n");
+        }
+        else
+        {
+            printf("\nDigite o CPF do cliente a ser alterado: \n");
+            scanf("%lld", &cpf);
+
+            busca = buscaCliente(clientes, tlClientes, cpf);
+            if (busca == -1)
+            {
+                printf("\nCPF invalido ou inexistente\n\n");
+            }
+            else
+            {
+                printf("\nCPF do cliente: %lld\n", clientes[busca].cpfCliente);
+                printf("\nNome do cliente: %s\n", clientes[busca].nomeCliente);
+                printf("\nQuantidade de compras feito: %d\n", clientes[busca].qtdeCompras);
+                printf("\nTotal comprado pelo cliente: %.2f\n", clientes[busca].valorTotalComprado);
+
+                printf("\n\nDeseja alterar esse cliente: (S/N)\n");
+                fflush(stdin);
+                op = toupper(getche());
+                if (op == 'S')
+                {
+                    printf("\nDigite o novo nome do cliente: \n");
+                    gets(clientes[busca].nomeCliente);
+                    printf("\nDigite o novo CPF do cliente: \n");
+                    scanf("%lld", &clientes[busca].cpfCliente);
+                    printf("\nDigite a nova quantidade de compras feita pelo cliente: \n");
+                    scanf("%d", &clientes[busca].qtdeCompras);
+                    printf("\nDigite o novo valor total comprado pelo cliente: \n");
+                    scanf("%f", &clientes[busca].valorTotalComprado);
+
+                    printf("\n\nAlteracoes feitas com sucesso!!\n\n");
+                    getch();
+                }
+            }
+        }
+        printf("\n\nDeseja alterar outro cliente: (S/N)\n");
+        fflush(stdin);
+        op = toupper(getche());
+    } while (op == 'S');
     return;
 }
 
@@ -1412,6 +1615,7 @@ void executar()
     tpProduto produtos[TF];
     int tlProdutos = 0;
     tpVendasProdutos vendas_produtos[TF];
+    int tlVendasProdutos = 0;
     int linha = 7;
 
     exibirMoldura();
@@ -1430,7 +1634,7 @@ void executar()
                 switch (opMenuVendas)
                 {
                 case 'A':
-                    efetuarVenda(vendas, tlVendas);
+                    efetuarVenda(vendas, tlVendas, clientes, tlClientes, produtos, tlProdutos, vendas_produtos, tlVendasProdutos);
                     break;
                 case 'B':
                     relatorioDeVendas(vendas, tlVendas);
@@ -1489,7 +1693,7 @@ void executar()
                     relatorioFornecedores(fornecedores, tlFornecedores);
                     break;
                 case 'F':
-                    aumentoDePreco(fornecedores, tlFornecedores);
+                    aumentoDePreco(fornecedores, tlFornecedores, produtos, tlProdutos);
                     break;
                 }
             } while (opMenuFornecedores != 27);
