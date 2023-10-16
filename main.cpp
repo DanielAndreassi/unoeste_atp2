@@ -67,6 +67,8 @@ void efetuarVenda(tpVenda vendas[TF], int &tl, tpCliente clientes[TF], int &tlCL
 void relatorioDeVendas(tpVenda vendas[TF], int &tl);
 void exclusaoDeVendas(tpVenda vendas[TF], int &tl, int &linha, tpCliente clientes[TF], int &tlCliente, tpProduto produtos[TF], int &tlProdutos, tpVendasProdutos vendasProdutos[TF], int &tlVendasProdutos);
 int buscarCpfClienteVendas(tpVenda vendas[TF], int &tl, int cpf);
+int buscaVendas2(tpVendasProdutos vendasProd[TF], int tl, int cod);
+int buscaVenda(tpVenda vendas[TF], int tlVendas, int codVenda);
 
 // *** CLIENTES ***
 void cadastroCliente(tpCliente clientes[TF], int &tl, int &linha);
@@ -81,8 +83,8 @@ void relatorioClientes(tpCliente fornecedores[TF], int tlFornecedores);
 void cadastroProdutos(tpProduto produtos[TF], int &tl, tpFornecedor fornecedores[TF], int &tlForn, int &linha, int veioDeCadForn);
 int buscaProd(tpProduto produtos[TF], int tl, int codProduto);
 int buscaProdPorFornecedor(tpProduto produtos[TF], int tl, int codForn);
-void exclusaoProd(tpProduto produtos[TF], int &tl, int indice);
-void exclusaoProdutos(tpProduto produtos[TF], int tlProdutos, int &Linha);
+void exclusaoProd(tpProduto produtos[TF], int &tl, int indice, int &linha, tpVendasProdutos vendas_produtos[TF], int &tlVendasProdutos, tpVenda vendas[TF], int tlVendas, tpCliente clientes[TF], int tlClientes, int veioDeExclusaoForn, tpFornecedor fornecedores[TF], int &tlForn);
+void exclusaoProdutos(tpProduto produtos[TF], int &tlProdutos, int &linha, tpVendasProdutos vendas_produtos[TF], int &tlVendasProdutos, tpVenda vendas[TF], int tlVendas, tpCliente clientes[TF], int tlClientes, tpFornecedor fornecedores[TF], int &tlForn);
 void consultaProdutos(tpProduto produtos[TF], int tlProdutos, int &linha, tpFornecedor fornecedores[TF]);
 void alteracaoProdutos(tpProduto protudos[TF], int tlProdutos, int &linha);
 void relatorioProdutos(tpProduto produtos[TF], int tlProdutos);
@@ -90,13 +92,55 @@ void relatorioProdutos(tpProduto produtos[TF], int tlProdutos);
 // *** FORNECEDORES ***
 void cadastroForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd, int &linha, int veioDeCadProd);
 int buscaForn(tpFornecedor fornecedores[TF], int tl, int codForn);
-void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd, int &linha);
+void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd, int &linha, tpVendasProdutos vendas_produtos[TF], int &tlVendasProdutos, tpVenda vendas[TF], int tlVendas, tpCliente clientes[TF], int tlClientes);
 void consultaForn(tpFornecedor forncedores[TF], int tlForn, int &linha);
 void alteracaoFornecedores(tpFornecedor fornecedores[TF], int tl, int &linha);
 void relatorioFornecedores(tpFornecedor fornecedores[TF], int tl);
 void aumentoDePreco(tpFornecedor fornecedores[TF], int tl, tpProduto produtos[TF], int tlProdutos, int &linha);
+void exclusaoSingularFornecedor(tpFornecedor fornecedores[TF], int &tl, int indice);
+
+// *** VENDAS PRODUTOS ***
+int buscaProdEmVendasProdutos(tpVendasProdutos vendas_produtos[TF], int tlVendasProdutos, int codProd);
+void exclusaoVendasProdutos(tpVendasProdutos vendas_produtos[TF], int &tlVendasProdutos, int indice);
 
 // FUNÇÕES
+
+int buscaVenda(tpVenda vendas[TF], int tlVendas, int codVenda)
+{
+    int i;
+
+    for (int i = 0; i < tlVendas; i++)
+    {
+        if (vendas[i].codVenda == codVenda)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int buscaProdEmVendasProdutos(tpVendasProdutos vendas_produtos[TF], int tlVendasProdutos, int codProd)
+{
+    int i;
+
+    for (int i = 0; i < tlVendasProdutos; i++)
+    {
+        if (vendas_produtos[i].codProd == codProd)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void exclusaoVendasProdutos(tpVendasProdutos vendas_produtos[TF], int &tlVendasProdutos, int indice)
+{
+    for (int i = indice; i < tlVendasProdutos; i++)
+    {
+        vendas_produtos[i] = vendas_produtos[i + 1];
+    }
+    tlVendasProdutos--;
+}
 
 void insercaoAutomDeDados(tpProduto produtos[TF], int &tlProdutos, tpCliente clientes[TF], int &tlClientes, tpFornecedor fornecedores[TF], int &tlFornecedores)
 {
@@ -125,38 +169,32 @@ void insercaoAutomDeDados(tpProduto produtos[TF], int &tlProdutos, tpCliente cli
 }
 
 // adicionar mais dados
-void exclusaoProdutos(tpProduto produtos[TF], int tlProdutos, int &linha)
+void exclusaoProdutos(tpProduto produtos[TF], int &tlProdutos, int &linha, tpVendasProdutos vendas_produtos[TF], int &tlVendasProdutos, tpVenda vendas[TF], int tlVendas, tpCliente clientes[TF], int tlClientes, tpFornecedor fornecedores[TF], int &tlForn)
 {
     int codProd, aux;
     char op;
     linha = 7;
-    system("cls");
-    linha = 7;
-    printf("__Exclusao de produtos__");
-
-    do
+    if (tlProdutos == 0)
     {
-        clrscr();
-        if (tlProdutos == 0)
-        {
-            gotoxy(41, linha);
-            linha++;
-            printf("Nao ha produtos para excluir");
-            getch();
-            linha = 7;
-        }
-
-        else
+        gotoxy(41, linha);
+        linha++;
+        printf("Nao ha produtos para excluir");
+        getch();
+        linha = 7;
+    }
+    else
+    {
+        do
         {
             limparExecucao();
             linha = 7;
             gotoxy(41, linha);
             linha++;
-            printf("Digite o codigo do produto a excluir");
+            printf("Digite o codigo do produto: ");
             scanf("%d", &codProd);
 
             aux = buscaProd(produtos, tlProdutos, codProd);
-            if (aux == -1)
+            while (aux == -1)
             {
                 if (linha > 19)
                 {
@@ -165,78 +203,72 @@ void exclusaoProdutos(tpProduto produtos[TF], int tlProdutos, int &linha)
                 }
                 gotoxy(41, linha);
                 linha++;
-                printf("Codigo invalido ou produto inexistentedigite outro codigo");
+                printf("Poduto inexistente, digite outro codigo: ");
                 scanf("%d", &codProd);
+                aux = buscaProd(produtos, tlProdutos, codProd);
             }
-            else
-            {
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
-                puts(produtos[aux].descricao);
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
-                printf("%d", produtos[aux].codProd);
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
-                printf("%d", produtos[aux].estoque);
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
-                printf("%f", produtos[aux].preco);
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
-                printf("%d/%d/%d", produtos[aux].data.d, produtos[aux].data.m, produtos[aux].data.a);
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
 
-                printf("confirma exclusao (S/N) ");
-                op = toupper(getche());
-                if (op == 'S')
+            if (linha > 19)
+            {
+                limparExecucao();
+                linha = 7;
+            }
+            gotoxy(41, linha);
+            linha++;
+            puts(produtos[aux].descricao);
+            if (linha > 19)
+            {
+                limparExecucao();
+                linha = 7;
+            }
+            gotoxy(41, linha);
+            linha++;
+            printf("%d", produtos[aux].codProd);
+            if (linha > 19)
+            {
+                limparExecucao();
+                linha = 7;
+            }
+            gotoxy(41, linha);
+            linha++;
+            printf("%d", produtos[aux].estoque);
+            if (linha > 19)
+            {
+                limparExecucao();
+                linha = 7;
+            }
+            gotoxy(41, linha);
+            linha++;
+            printf("%f", produtos[aux].preco);
+            if (linha > 19)
+            {
+                limparExecucao();
+                linha = 7;
+            }
+            gotoxy(41, linha);
+            linha++;
+            printf("%d/%d/%d", produtos[aux].data.d, produtos[aux].data.m, produtos[aux].data.a);
+            if (linha > 19)
+            {
+                limparExecucao();
+                linha = 7;
+            }
+            gotoxy(41, linha);
+            linha++;
+
+            printf("Confirma exclusao (S/N): ");
+            op = toupper(getche());
+            if (op == 'S')
+            {
+                exclusaoProd(produtos, tlProdutos, aux, linha, vendas_produtos, tlVendasProdutos, vendas, tlVendas, clientes, tlClientes, 0, fornecedores, tlForn);
+                if (linha > 19)
                 {
-                    for (; aux < tlProdutos - 1; aux++)
-                    {
-                        produtos[aux] = produtos[aux + 1];
-                    }
-                    tlProdutos--;
-                    if (linha > 19)
-                    {
-                        limparExecucao();
-                        linha = 7;
-                    }
-                    gotoxy(41, linha);
-                    linha++;
-                    printf("Produto excluido");
-                    getch();
+                    limparExecucao();
+                    linha = 7;
                 }
+                gotoxy(41, linha);
+                linha++;
+                printf("Produto excluido");
             }
             if (linha > 19)
             {
@@ -245,14 +277,11 @@ void exclusaoProdutos(tpProduto produtos[TF], int tlProdutos, int &linha)
             }
             gotoxy(41, linha);
             linha++;
-            printf("Deseja excluir outro produto (S/N)");
+            printf("Deseja excluir outro produto (S/N): ");
             fflush(stdin);
             op = toupper(getche());
-        }
-
-    } while (op != 'S');
-
-    return;
+        } while (op != 'N');
+    }
 }
 
 // pronto
@@ -868,23 +897,6 @@ int buscaProd(tpProduto produtos[TF], int tl, int codProduto)
     }
     return -1;
 }
-
-int buscaVendas(tpVenda vendas[TF], int tl, int cod)
-{
-    int pos = 0;
-    while (pos < tl && vendas[pos].codVenda != cod)
-    {
-        pos++;
-    }
-    if (pos == tl)
-    {
-        return -1;
-    }
-    else
-    {
-        return pos;
-    }
-}
 // declarar
 int buscaVendas2(tpVendasProdutos vendasProd[TF], int tl, int cod)
 {
@@ -917,17 +929,46 @@ int buscaProdPorFornecedor(tpProduto produtos[TF], int tl, int codForn)
     return -1;
 }
 
-void exclusaoProd(tpProduto produtos[TF], int &tl, int indice)
+void exclusaoProd(tpProduto produtos[TF], int &tl, int indice, int &linha, tpVendasProdutos vendas_produtos[TF], int &tlVendasProdutos, tpVenda vendas[TF], int tlVendas, tpCliente clientes[TF], int tlClientes, int veioDeExclusaoForn, tpFornecedor fornecedores[TF], int &tlForn)
 {
+    int buscaEmVendProd;
+    buscaEmVendProd = buscaProdEmVendasProdutos(vendas_produtos, tlVendasProdutos, produtos[indice].codProd);
+    while (buscaEmVendProd != -1)
+    {
+        tpVendasProdutos vendaProdAtual = vendas_produtos[buscaEmVendProd];
+        int buscaEmVenda = buscaVenda(vendas, tlVendas, vendaProdAtual.codVenda);
+        vendas[buscaEmVenda].totalVendas -= vendaProdAtual.qtde * vendaProdAtual.valorUnitario;
+        int buscaCli = buscaCliente(clientes, tlClientes, vendas[buscaEmVenda].cpfCliente);
+        clientes[buscaCli].valorTotalComprado -= vendaProdAtual.qtde * vendaProdAtual.valorUnitario;
+        exclusaoVendasProdutos(vendas_produtos, tlVendasProdutos, buscaEmVendProd);
+    }
+    int codForn = produtos[indice].codForn;
     for (int i = indice; i < tl; i++)
     {
         produtos[i] = produtos[i + 1];
     }
     tl--;
-    // printf("produto")
+    if (veioDeExclusaoForn == 0)
+    {
+        int buscaProdForn = buscaProdPorFornecedor(produtos, tl, codForn);
+        if (buscaProdForn == -1)
+        {
+            int buscaFor = buscaForn(fornecedores, tlForn, codForn);
+            exclusaoSingularFornecedor(fornecedores, tlForn, buscaFor);
+        }
+    }
 }
 
-void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd, int &linha)
+void exclusaoSingularFornecedor(tpFornecedor fornecedores[TF], int &tl, int indice)
+{
+    for (int i = indice; i < tl; i++)
+    {
+        fornecedores[i] = fornecedores[i + 1];
+    }
+    tl--;
+}
+
+void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF], int &tlProd, int &linha, tpVendasProdutos vendas_produtos[TF], int &tlVendasProdutos, tpVenda vendas[TF], int tlVendas, tpCliente clientes[TF], int tlClientes)
 {
     int aux, codForn;
     linha = 7;
@@ -956,7 +997,8 @@ void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF]
     aux = buscaProdPorFornecedor(produtos, tlProd, codForn);
     while (aux != -1)
     {
-        exclusaoProd(produtos, tlProd, aux);
+        // vendas_pro &tlVendasProdutos
+        exclusaoProd(produtos, tlProd, aux, linha, vendas_produtos, tlVendasProdutos, vendas, tlVendas, clientes, tlClientes, 1, fornecedores, tl);
         aux = buscaProdPorFornecedor(produtos, tlProd, codForn);
     }
     if (linha > 19)
@@ -1413,7 +1455,7 @@ void exclusaoDeVendas(tpVenda vendas[TF], int &tl, int &linha, tpCliente cliente
         scanf("%d", &codVenda);
         while (tl > 0 && codVenda > 0)
         {
-            aux = buscaVendas(vendas, tl, codVenda);
+            aux = buscaVenda(vendas, tl, codVenda);
             if (aux == -1)
             {
                 printf("venda nao cadastrada");
@@ -2196,7 +2238,7 @@ void executar()
                     consultaProdutos(produtos, tlProdutos, linha, fornecedores);
                     break;
                 case 'C':
-                    exclusaoProdutos(produtos, tlProdutos, linha);
+                    exclusaoProdutos(produtos, tlProdutos, linha, vendas_produtos, tlVendasProdutos, vendas, tlVendas, clientes, tlClientes, fornecedores, tlFornecedores);
                     break;
                 case 'D':
                     alteracaoProdutos(produtos, tlProdutos, linha);
@@ -2221,7 +2263,7 @@ void executar()
                     consultaForn(fornecedores, tlFornecedores, linha);
                     break;
                 case 'C':
-                    exclusaoForn(fornecedores, tlFornecedores, produtos, tlProdutos, linha);
+                    exclusaoForn(fornecedores, tlFornecedores, produtos, tlProdutos, linha, vendas_produtos, tlVendasProdutos, vendas, tlVendas, clientes, tlClientes);
                     break;
                 case 'D':
                     alteracaoFornecedores(fornecedores, tlFornecedores, linha);
