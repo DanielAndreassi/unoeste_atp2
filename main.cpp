@@ -1941,7 +1941,7 @@ void exclusaoClientes(tpCliente clientes[TF], int &tlClientes)
 
     return;
 }
-// falta exclusao de clientes
+// falta exclusao de clientes  
 void alteracaoClientes(tpCliente clientes[TF], int tlClientes, int &linha)
 {
     int busca;
