@@ -65,16 +65,16 @@ void limparMensagem();
 // *** VENDAS ****
 void efetuarVenda(tpVenda vendas[TF], int &tl, tpCliente clientes[TF], int &tlCLiente, tpProduto produtos[TF], int &tlProdutos, tpVendasProdutos vendasProdutos[TF], int &tlVendasProdutos, int &linha);
 void relatorioDeVendas(tpVenda vendas[TF], int &tl);
-void exclusaoDeVendas(tpVenda vendas[TF], int &tl);
+void exclusaoDeVendas(tpVenda vendas[TF], int &tl, int &linha, tpCliente clientes[TF], int &tlCliente, tpProduto produtos[TF], int &tlProdutos, tpVendasProdutos vendasProdutos[TF], int &tlVendasProdutos);
 int buscarCpfClienteVendas(tpVenda vendas[TF], int &tl, int cpf);
 
 // *** CLIENTES ***
 void cadastroCliente(tpCliente clientes[TF], int &tl, int &linha);
 int buscaCliente(tpCliente clientes[TF], int tl, long int cpfCliente);
 void exclusaoCliente(tpCliente clientes[TF], int &tl, int &linha);
-void consultaClientes(tpCliente clientes[TF], int tl);
+void consultaClientes(tpCliente clientes[TF], int tl, int &linha);
 void exclusaoClientes(tpCliente clientes[TF], int &tlClientes);
-void alteracaoClientes(tpCliente clientes[TF], int tlClientes);
+void alteracaoClientes(tpCliente clientes[TF], int tlClientes, int &linha);
 void relatorioClientes(tpCliente fornecedores[TF], int tlFornecedores);
 
 // *** PRODUTOS ***
@@ -94,7 +94,7 @@ void exclusaoForn(tpFornecedor fornecedores[TF], int &tl, tpProduto produtos[TF]
 void consultaForn(tpFornecedor forncedores[TF], int tlForn, int &linha);
 void alteracaoFornecedores(tpFornecedor fornecedores[TF], int tl, int &linha);
 void relatorioFornecedores(tpFornecedor fornecedores[TF], int tl);
-void aumentoDePreco(tpFornecedor fornecedores[TF], int tl, tpProduto produtos[TF], int tlProdutos);
+void aumentoDePreco(tpFornecedor fornecedores[TF], int tl, tpProduto produtos[TF], int tlProdutos, int &linha);
 
 // FUNÇÕES
 
@@ -869,40 +869,40 @@ int buscaProd(tpProduto produtos[TF], int tl, int codProduto)
     return -1;
 }
 
-int buscaVendas(tpVenda vendas[TF],int tl,int cod)
+int buscaVendas(tpVenda vendas[TF], int tl, int cod)
 {
-    int pos=0;
-    while(pos<tl && vendas[pos].codVenda!=cod)
+    int pos = 0;
+    while (pos < tl && vendas[pos].codVenda != cod)
     {
         pos++;
     }
-    if (pos==tl)
+    if (pos == tl)
     {
         return -1;
     }
-    else 
+    else
     {
         return pos;
     }
 }
-//declarar
-int buscaVendas2(tpVendasProdutos vendasProd[TF],int tl,int cod)
+// declarar
+int buscaVendas2(tpVendasProdutos vendasProd[TF], int tl, int cod)
 {
-    int pos=0;
-    while(pos<tl && vendasProd[pos].codVenda!=cod)
+    int pos = 0;
+    while (pos < tl && vendasProd[pos].codVenda != cod)
     {
         pos++;
     }
-    if (pos==tl)
+    if (pos == tl)
     {
         return -1;
     }
-    else 
+    else
     {
         return pos;
     }
 }
-//declarar funcao nova
+// declarar funcao nova
 int buscaProdPorFornecedor(tpProduto produtos[TF], int tl, int codForn)
 {
     int i;
@@ -1395,66 +1395,73 @@ void relatorioDeVendas(tpVenda vendas[TF], int &tl)
 }
 // NAO ESTA FEITO fazerrrrrrrrrrrrrrrrrrrrrr
 
-void exclusaoDeVendas(tpVenda vendas[TF], int &tl,int &linha,tpCliente clientes[TF],int &tlCliente,tpProduto produtos[TF],int &tlProdutos,tpVendasProdutos vendasProdutos[TF],int &tlVendasProdutos)
+void exclusaoDeVendas(tpVenda vendas[TF], int &tl, int &linha, tpCliente clientes[TF], int &tlCliente, tpProduto produtos[TF], int &tlProdutos, tpVendasProdutos vendasProdutos[TF], int &tlVendasProdutos)
 {
-    int aux, codVenda,pos1;
+    int aux, codVenda, pos1;
     char op;
-    linha=7;
-    if(tl==0) {
+    linha = 7;
+    if (tl == 0)
+    {
         gotoxy(41, linha);
         linha++;
         printf("Vendas nao registradas");
         getch();
     }
-    else {
+    else
+    {
         printf("digite o codigo da venda que deseja apagar: ");
-        scanf("%d",&codVenda);
-        while(tl>0 && codVenda>0) {
-            aux=buscaVendas(vendas,tl,codVenda);
-            if(aux==-1) {
+        scanf("%d", &codVenda);
+        while (tl > 0 && codVenda > 0)
+        {
+            aux = buscaVendas(vendas, tl, codVenda);
+            if (aux == -1)
+            {
                 printf("venda nao cadastrada");
                 getch();
             }
-            else {
-                printf("CPF do cliente: %li",vendas[aux].cpfCliente);
-                printf("data da venda: %d/%d/%d",vendas[aux].data.d,vendas[aux].data.m,vendas[aux].data.a);
-                printf("total da venda: %.2f",vendas[aux].totalVendas);
+            else
+            {
+                printf("CPF do cliente: %li", vendas[aux].cpfCliente);
+                printf("data da venda: %d/%d/%d", vendas[aux].data.d, vendas[aux].data.m, vendas[aux].data.a);
+                printf("total da venda: %.2f", vendas[aux].totalVendas);
                 printf("confirmar exclusao? (S/N)");
-                op=toupper(getche());
-                if(op=='S') {
-                    pos1=buscaCliente(clientes,tlCliente,vendas[aux].cpfCliente);
+                op = toupper(getche());
+                if (op == 'S')
+                {
+                    pos1 = buscaCliente(clientes, tlCliente, vendas[aux].cpfCliente);
                     clientes[pos1].qtdeCompras--;
-                    clientes[pos1].valorTotalComprado-=vendas[aux].totalVendas;
-                    for(;aux<tl;aux++) {
-                        vendas[aux]=vendas[aux+1];
+                    clientes[pos1].valorTotalComprado -= vendas[aux].totalVendas;
+                    for (; aux < tl; aux++)
+                    {
+                        vendas[aux] = vendas[aux + 1];
                         vendas[aux].codVenda--;
                     }
                     tl--;
-                    aux=buscaVendas2(vendasProdutos,tlVendasProdutos,codVenda);
-                    while(aux<tlVendasProdutos)
+                    aux = buscaVendas2(vendasProdutos, tlVendasProdutos, codVenda);
+                    while (aux < tlVendasProdutos)
                     {
-                        pos1=buscaProd(produtos,tlProdutos,vendasProdutos[aux].codProd);
-                        produtos[pos1].estoque+=vendasProdutos[pos1].qtde;
-                        for(int i=aux;i<tlVendasProdutos-1;i++)
+                        pos1 = buscaProd(produtos, tlProdutos, vendasProdutos[aux].codProd);
+                        produtos[pos1].estoque += vendasProdutos[pos1].qtde;
+                        for (int i = aux; i < tlVendasProdutos - 1; i++)
                         {
-                            vendasProdutos[i]=vendasProdutos[i+1];
+                            vendasProdutos[i] = vendasProdutos[i + 1];
                         }
                         tlVendasProdutos--;
-                        aux=buscaVendas2(vendasProdutos,tlVendasProdutos,codVenda);
+                        aux = buscaVendas2(vendasProdutos, tlVendasProdutos, codVenda);
                     }
-                    aux=buscaVendas2(vendasProdutos,tlVendasProdutos,codVenda+1);
-                    for(int i=0;i<tlVendasProdutos;i++)
+                    aux = buscaVendas2(vendasProdutos, tlVendasProdutos, codVenda + 1);
+                    for (int i = 0; i < tlVendasProdutos; i++)
                     {
                         vendasProdutos[i].codVenda--;
                     }
                     printf("venda excluida com sucesso");
                 }
-                else{
+                else
+                {
                     printf("exclusao cancelada");
                 }
             }
         }
-        
     }
     return;
 }
@@ -2164,13 +2171,13 @@ void executar()
                 switch (opMenuVendas)
                 {
                 case 'A':
-                    efetuarVenda(vendas, tlVendas, clientes, tlClientes, produtos, tlProdutos, vendas_produtos, tlVendasProdutos);
+                    efetuarVenda(vendas, tlVendas, clientes, tlClientes, produtos, tlProdutos, vendas_produtos, tlVendasProdutos, linha);
                     break;
                 case 'B':
                     relatorioDeVendas(vendas, tlVendas);
                     break;
                 case 'C':
-                    exclusaoDeVendas(vendas, tlVendas);
+                    exclusaoDeVendas(vendas, tlVendas, linha, clientes, tlClientes, produtos, tlProdutos, vendas_produtos, tlVendasProdutos);
                     break;
                 }
             } while (opMenuVendas != 27);
@@ -2189,7 +2196,7 @@ void executar()
                     consultaProdutos(produtos, tlProdutos, linha, fornecedores);
                     break;
                 case 'C':
-                    exclusaoProdutos(produtos, tlProdutos);
+                    exclusaoProdutos(produtos, tlProdutos, linha);
                     break;
                 case 'D':
                     alteracaoProdutos(produtos, tlProdutos, linha);
@@ -2214,7 +2221,7 @@ void executar()
                     consultaForn(fornecedores, tlFornecedores, linha);
                     break;
                 case 'C':
-                    exclusaoForn(fornecedores, tlFornecedores, produtos, tlProdutos);
+                    exclusaoForn(fornecedores, tlFornecedores, produtos, tlProdutos, linha);
                     break;
                 case 'D':
                     alteracaoFornecedores(fornecedores, tlFornecedores, linha);
@@ -2223,7 +2230,7 @@ void executar()
                     relatorioFornecedores(fornecedores, tlFornecedores);
                     break;
                 case 'F':
-                    aumentoDePreco(fornecedores, tlFornecedores, produtos, tlProdutos);
+                    aumentoDePreco(fornecedores, tlFornecedores, produtos, tlProdutos, linha);
                     break;
                 }
             } while (opMenuFornecedores != 27);
@@ -2236,16 +2243,16 @@ void executar()
                 switch (opMenuClientes)
                 {
                 case 'A':
-                    cadastroCliente(clientes, tlClientes);
+                    cadastroCliente(clientes, tlClientes, linha);
                     break;
                 case 'B':
-                    consultaClientes(clientes, tlClientes);
+                    consultaClientes(clientes, tlClientes, linha);
                     break;
                 case 'C':
                     exclusaoClientes(clientes, tlClientes);
                     break;
                 case 'D':
-                    alteracaoClientes(clientes, tlClientes);
+                    alteracaoClientes(clientes, tlClientes, linha);
                     break;
                 case 'E':
                     relatorioClientes(clientes, tlClientes);
