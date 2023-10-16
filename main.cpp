@@ -67,20 +67,15 @@ void efetuarVenda(tpVenda vendas[TF], int &tl, tpCliente clientes[TF], int &tlCL
 void relatorioDeVendas(tpVenda vendas[TF], int &tl);
 void exclusaoDeVendas(tpVenda vendas[TF], int &tl, int &linha, tpCliente clientes[TF], int &tlCliente, tpProduto produtos[TF], int &tlProdutos, tpVendasProdutos vendasProdutos[TF], int &tlVendasProdutos);
 int buscarCpfClienteVendas(tpVenda vendas[TF], int &tl, int cpf);
-<<<<<<< HEAD
-int buscaVendas(tpVenda vendas[TF], int tl, int cod);
-int buscaVendas2(tpVendasProdutos vendasProd[TF], int tl, int cod);
-=======
 int buscaVendas2(tpVendasProdutos vendasProd[TF], int tl, int cod);
 int buscaVenda(tpVenda vendas[TF], int tlVendas, int codVenda);
->>>>>>> 4628b9b70c9825e7f06ae9c6946ba8c79ee3d5ae
 
 // *** CLIENTES ***
 void cadastroCliente(tpCliente clientes[TF], int &tl, int &linha);
 int buscaCliente(tpCliente clientes[TF], int tl, long int cpfCliente);
 void exclusaoCliente(tpCliente clientes[TF], int &tl, int &linha);
 void consultaClientes(tpCliente clientes[TF], int tl, int &linha);
-void exclusaoClientes(tpCliente clientes[TF], int &tlClientes, int &linha, tpVenda vendas[TF], int &tlVendas, tpVendasProdutos vendasProdutos[TF], int &tlVendasProdutos);
+void exclusaoClientes(tpCliente clientes[TF], int &tlClientes);
 void alteracaoClientes(tpCliente clientes[TF], int tlClientes, int &linha);
 void relatorioClientes(tpCliente fornecedores[TF], int tlFornecedores);
 
@@ -952,28 +947,7 @@ int buscaProd(tpProduto produtos[TF], int tl, int codProduto)
     }
     return -1;
 }
-<<<<<<< HEAD
-
-int buscaVendas(tpVenda vendas[TF], int tl, int cod)
-{
-    int pos = 0;
-    while (pos < tl && vendas[pos].codVenda != cod)
-    {
-        pos++;
-    }
-    if (pos == tl)
-    {
-        return -1;
-    }
-    else
-    {
-        return pos;
-    }
-}
-
-=======
 // declarar
->>>>>>> 4628b9b70c9825e7f06ae9c6946ba8c79ee3d5ae
 int buscaVendas2(tpVendasProdutos vendasProd[TF], int tl, int cod)
 {
     int pos = 0;
@@ -990,7 +964,7 @@ int buscaVendas2(tpVendasProdutos vendasProd[TF], int tl, int cod)
         return pos;
     }
 }
-
+// declarar funcao nova
 int buscaProdPorFornecedor(tpProduto produtos[TF], int tl, int codForn)
 {
     int i;
@@ -1273,14 +1247,13 @@ void efetuarVenda(tpVenda vendas[TF], int &tl, tpCliente clientes[TF], int &tlCL
             }
             gotoxy(41, linha);
             linha++;
-            limparExecucao();
             printf("Cliente Nao cadastrado\n");
             getch();
             cadastroCliente(clientes, tlCLiente, linha);
         }
         do
         {
-            if (tlProdutos > 0 || op == 'S')
+            if (tlProdutos > 0 && op == 'S')
             {
                 relatorioProdutos(produtos, tlProdutos);
                 if (linha > 19)
@@ -1490,35 +1463,26 @@ void efetuarVenda(tpVenda vendas[TF], int &tl, tpCliente clientes[TF], int &tlCL
     return;
 }
 
-void relatorioDeVendas(tpVenda vendas[TF], int &tl,tpVendasProdutos VendasProdutos[TF], int &tlVendasProdutos,tpProduto produto[TF], int &tlProdutos,tpFornecedor fornecedor[TF], int &tlForn)
+void relatorioDeVendas(tpVenda vendas[TF], int &tl)
 {
-    int aux=0,i=8,pos;
-    float total=0;
-    char descr[30],fornecedoraux[30];
     system("cls");
-    if (tl>0)
+    if (tl == 0)
     {
-        while(aux<tl+1)
+        printf("nao ha vendas registradas para gerar um relatorio");
+        getch();
+    }
+    else
+    {
+        for (int i = 0; i < tl; i++)
         {
-            gotoxy (46,6), printf("relatorio de vendas");
-            gotoxy (30,i++), printf("codigo de venda: %d",aux);
-            gotoxy(30,i++),printf("Produtos:");
-            for(pos=buscaVendas2(VendasProdutos,tlVendasProdutos,aux);pos<tlVendasProdutos;pos++)
-            {
-                gotoxy(30,i++),printf("codigo do produto: %d",VendasProdutos[pos].codProd);
-                gotoxy(30,i++),printf("quantidade: %d",VendasProdutos[pos].qtde);
-                strcpy(descr,produto[buscaProd(produto,tlProdutos,VendasProdutos[pos].codProd)].descricao);
-                printf("%s",descr);
-                total+=VendasProdutos[pos].qtde*produto[buscaProd(produto,tlProdutos,VendasProdutos[pos].codProd)].preco;
-                strcpy(fornecedoraux,fornecedor[buscaForn(fornecedor,tlForn,produto[buscaProd(produto,tlProdutos,VendasProdutos[pos].codProd)].codForn)].nomeForn);
-                printf("%s",fornecedoraux);
-
-            }
-            printf("%.2f",total);
-            
+            printf("*__________*");
+            printf("CPF do clienten: %li", vendas[i].cpfCliente);
+            printf("Codigo da venda: %d", vendas[i].codVenda);
+            printf("Total de vendas: %.2f", vendas[i].totalVendas);
+            printf("Data da venda %d/%d/%d", vendas[i].data.d, vendas[i].data.m, vendas[i].data.a);
+            printf("*__________*");
         }
     }
-  
     return;
 }
 // NAO ESTA FEITO fazerrrrrrrrrrrrrrrrrrrrrr
@@ -1972,135 +1936,12 @@ void consultaClientes(tpCliente clientes[TF], int tl, int &linha)
     return;
 }
 
-void exclusaoClientes(tpCliente clientes[TF], int &tlClientes, int &linha, tpVenda vendas[TF], int &tlVendas, tpVendasProdutos vendasProdutos[TF], int &tlVendasProdutos)
+void exclusaoClientes(tpCliente clientes[TF], int &tlClientes)
 {
-    long long int cpf;
-    int busca;
-    char op;
-    int linha = 7;
-    do
-    {
-        if (tlClientes == 0)
-        {
-            gotoxy(41, linha);
-            linha++;
-            printf("Nao ha clientes para excluir");
-            getch();
-        }
-        else
-        {
-            if (linha > 19)
-            {
-                limparExecucao();
-                linha = 7;
-            }
-            gotoxy(41, linha);
-            linha++;
-            printf("Digite o CPF do cliente: ");
-            scanf("%lld", &cpf);
-            busca = buscaCliente(clientes, tlClientes, cpf);
-            if (busca == -1)
-            {
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
-                printf("cliente nao cadastrado");
-                getch();
-            }
-            else
-            {
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
-                printf("CPF: %lld", clientes[busca].cpfCliente);
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
-                puts(clientes[busca].nomeCliente);
-                if (linha > 19)
-                {
-                    limparExecucao();
-                    linha = 7;
-                }
-                gotoxy(41, linha);
-                linha++;
-                printf("Deseja excluir esse cliente: (S/N)");
-                op = toupper(getche());
-                if (op == 'S')
-                {
-                    for (int i = busca; i < tlClientes; i++)
-                    {
-                        clientes[i] = clientes[i + 1];
-                    }
-                    for (int i = 0; i < tlVendas; i++)
-                    {
-                        if (vendas[i].cpfCliente == cpf)
-                        {
-                            for (int j = i; j < tlVendas; j++)
-                            {
-                                vendas[j] = vendas[j + 1];
-                            }
-                            tlVendas--;
-                        }
-                    }
-                    for (int i = 0; i < tlVendasProdutos; i++)
-                    {
-                        if (vendasProdutos[i].codVenda == vendas[i].codVenda)
-                        {
-                            for (int j = i; j < tlVendasProdutos; j++)
-                            {
-                                vendasProdutos[j] = vendasProdutos[j + 1];
-                            }
-                            tlVendasProdutos--;
-                        }
-                    }
-                    tlClientes--;
-                    if (linha > 19)
-                    {
-                        limparExecucao();
-                        linha = 7;
-                    }
-                    gotoxy(41, linha);
-                    linha++;
-                    printf("cliente excluido com sucesso");
-                }
-                else
-                {
-                    if (linha > 19)
-                    {
-                        limparExecucao();
-                        linha = 7;
-                    }
-                    gotoxy(41, linha);
-                    linha++;
-                    printf("exclusao cancelada");
-                }
-            }
-        }
-        if (linha > 19)
-        {
-            limparExecucao();
-            linha = 7;
-        }
-        gotoxy(41, linha);
-        linha++;
-        printf("Deseja excluir outro cliente: (S/N)");
-    } while (toupper(getche()) == 'S');
+
     return;
 }
-
+// falta exclusao de clientes  
 void alteracaoClientes(tpCliente clientes[TF], int tlClientes, int &linha)
 {
     int busca;
